@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로또번호 추천</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 480px;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    .games {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+      min-height: 60px;
+    }
+    .game-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .game-label {
+      font-size: 12px;
+      color: #aaa;
+      width: 38px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .plus {
+      font-size: 18px;
+      color: #999;
+      margin: 0 2px;
+      font-weight: bold;
+    }
+    .ball.bonus {
+      background: #2c3e50;
+      border: 2px dashed #fff;
+    }
+    .ball {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background: #999;
+      animation: pop 0.3s ease;
+    }
+    @keyframes pop {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .ball:nth-child(1) { background: #fbc400; }
+    .ball:nth-child(2) { background: #69c8f2; }
+    .ball:nth-child(3) { background: #ff7272; }
+    .ball:nth-child(4) { background: #aaa; }
+    .ball:nth-child(5) { background: #b0d840; }
+    .ball:nth-child(6) { background: #f842d9; }
+    .empty {
+      color: #bbb;
+      font-size: 15px;
+      align-self: center;
+      text-align: center;
+    }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 40px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(102,126,234,0.5); }
+    button:active { transform: translateY(0); }
+    .history {
+      margin-top: 30px;
+      text-align: left;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+    .history h2 { font-size: 14px; color: #666; margin-bottom: 12px; }
+    .history-item {
+      font-size: 13px;
+      color: #555;
+      padding: 6px 0;
+      border-bottom: 1px dashed #f0f0f0;
+    }
+    .clear-btn {
+      margin-top: 15px;
+      background: none;
+      color: #aaa;
+      box-shadow: none;
+      font-size: 13px;
+      padding: 5px 10px;
+      text-decoration: underline;
+    }
+    .clear-btn:hover { color: #ff7272; box-shadow: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🍀 로또번호 추천</h1>
+    <p class="subtitle">버튼을 누르면 행운의 번호가 나옵니다 (1~45)</p>
+
+    <div class="games" id="games">
+      <span class="empty">버튼을 눌러 번호를 뽑아보세요!<br />(한 번에 5게임)</span>
+    </div>
+
+    <button onclick="generate()">번호 뽑기 🎲 (5게임)</button>
+
+    <div class="history" id="historyBox" style="display:none;">
+      <h2>📜 추천 기록</h2>
+      <div id="historyList"></div>
+      <button class="clear-btn" onclick="clearHistory()">기록 지우기</button>
+    </div>
+  </div>
+
+  <script>
+    const gamesEl = document.getElementById('games');
+    const historyBox = document.getElementById('historyBox');
+    const historyList = document.getElementById('historyList');
+    const history = [];
+    const GAME_COUNT = 5;
+
+    function makeOneGame() {
+      const set = new Set();
+      while (set.size < 6) {
+        set.add(Math.floor(Math.random() * 45) + 1);
+      }
+      const main = [...set].sort((a, b) => a - b);
+      // 본번호 6개를 제외한 나머지 중에서 보너스 번호 1개 추출
+      let bonus;
+      do {
+        bonus = Math.floor(Math.random() * 45) + 1;
+      } while (set.has(bonus));
+      return { main, bonus };
+    }
+
+    function generate() {
+      gamesEl.innerHTML = '';
+      const games = [];
+
+      for (let i = 0; i < GAME_COUNT; i++) {
+        const { main, bonus } = makeOneGame();
+        games.push({ main, bonus });
+
+        const row = document.createElement('div');
+        row.className = 'game-row';
+        const label = document.createElement('span');
+        label.className = 'game-label';
+        label.textContent = (i + 1) + '게임';
+        row.appendChild(label);
+        main.forEach(n => {
+          const ball = document.createElement('div');
+          ball.className = 'ball';
+          ball.textContent = n;
+          row.appendChild(ball);
+        });
+        const plus = document.createElement('span');
+        plus.className = 'plus';
+        plus.textContent = '+';
+        row.appendChild(plus);
+        const bBall = document.createElement('div');
+        bBall.className = 'ball bonus';
+        bBall.textContent = bonus;
+        row.appendChild(bBall);
+        gamesEl.appendChild(row);
+      }
+
+      // 기록 추가 (5게임 묶음)
+      const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+      history.unshift({ games, time });
+      renderHistory();
+    }
+
+    function renderHistory() {
+      historyBox.style.display = 'block';
+      historyList.innerHTML = history
+        .map(h => {
+          const lines = h.games
+            .map((g, i) => `${i + 1}게임: ${g.main.join(' · ')} + ${g.bonus}`)
+            .join('<br />');
+          return `<div class="history-item">[${h.time}]<br />${lines}</div>`;
+        })
+        .join('');
+    }
+
+    function clearHistory() {
+      history.length = 0;
+      historyBox.style.display = 'none';
+      historyList.innerHTML = '';
+    }
+  </script>
+</body>
+</html>
