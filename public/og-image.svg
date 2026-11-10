@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#db2777" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Card Background -->
+  <rect x="150" y="85" width="900" height="460" rx="30" fill="#ffffff" filter="url(#shadow)"/>
+
+  <!-- Badge -->
+  <rect x="475" y="130" width="250" height="38" rx="19" fill="#e0e7ff"/>
+  <text x="600" y="155" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="bold" fill="#4338ca" text-anchor="middle">GPT-4o-mini AI 사주 분석</text>
+
+  <!-- Title -->
+  <text x="600" y="225" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="44" font-weight="800" fill="#0f172a" text-anchor="middle">🍀 AI 로또 사주 &amp; 행운 번호</text>
+  <text x="600" y="275" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" fill="#64748b" text-anchor="middle">오늘 당신의 행운 번호와 대박 금전운을 실시간 AI로 확인하세요!</text>
+
+  <!-- Lotto Balls -->
+  <g transform="translate(360, 320)">
+    <!-- Ball 1 -->
+    <circle cx="40" cy="40" r="35" fill="#f59e0b" filter="url(#shadow)"/>
+    <text x="40" y="49" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">7</text>
+
+    <!-- Ball 2 -->
+    <circle cx="120" cy="40" r="35" fill="#3b82f6" filter="url(#shadow)"/>
+    <text x="120" y="49" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">14</text>
+
+    <!-- Ball 3 -->
+    <circle cx="200" cy="40" r="35" fill="#ef4444" filter="url(#shadow)"/>
+    <text x="200" y="49" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">23</text>
+
+    <!-- Ball 4 -->
+    <circle cx="280" cy="40" r="35" fill="#6b7280" filter="url(#shadow)"/>
+    <text x="280" y="49" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">38</text>
+
+    <!-- Ball 5 -->
+    <circle cx="360" cy="40" r="35" fill="#10b981" filter="url(#shadow)"/>
+    <text x="360" y="49" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">42</text>
+
+    <!-- Ball 6 (Bonus) -->
+    <circle cx="440" cy="40" r="35" fill="#8b5cf6" filter="url(#shadow)"/>
+    <text x="440" y="49" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">45</text>
+  </g>
+
+  <!-- Bottom CTA -->
+  <rect x="425" y="435" width="350" height="52" rx="26" fill="url(#bg)" filter="url(#shadow)"/>
+  <text x="600" y="468" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">지금 바로 무료로 번호 뽑기 ➔</text>
+</svg>
