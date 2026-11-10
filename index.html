@@ -5,35 +5,115 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로또번호 추천</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --card-bg: #ffffff;
+      --text-primary: #333333;
+      --text-secondary: #888888;
+      --text-muted: #aaaaaa;
+      --border-color: #eeeeee;
+      --history-item-border: #f0f0f0;
+      --history-text: #555555;
+      --btn-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --btn-shadow: rgba(102, 126, 234, 0.4);
+      --btn-shadow-hover: rgba(102, 126, 234, 0.5);
+      --toggle-bg: #f3f4f6;
+      --toggle-text: #4b5563;
+      --toggle-border: #e5e7eb;
+      --bonus-ball-bg: #2c3e50;
+      --card-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    body.dark-mode {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      --card-bg: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: #334155;
+      --history-item-border: #334155;
+      --history-text: #cbd5e1;
+      --btn-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --btn-shadow: rgba(99, 102, 241, 0.4);
+      --btn-shadow-hover: rgba(99, 102, 241, 0.6);
+      --toggle-bg: #334155;
+      --toggle-text: #f1f5f9;
+      --toggle-border: #475569;
+      --bonus-ball-bg: #3b82f6;
+      --card-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
     body {
       font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--bg-gradient);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
+
     .card {
-      background: #fff;
+      background: var(--card-bg);
       border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      box-shadow: var(--card-shadow);
       width: 100%;
       max-width: 480px;
-      padding: 40px 30px;
+      padding: 30px 25px 40px;
       text-align: center;
+      position: relative;
     }
+
+    .card-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: none;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .theme-toggle:active {
+      transform: translateY(0);
+    }
+
     h1 {
       font-size: 24px;
-      color: #333;
+      color: var(--text-primary);
       margin-bottom: 8px;
     }
+
     .subtitle {
-      color: #888;
+      color: var(--text-secondary);
       font-size: 14px;
-      margin-bottom: 30px;
+      margin-bottom: 26px;
     }
+
     .games {
       display: flex;
       flex-direction: column;
@@ -41,29 +121,29 @@
       margin-bottom: 30px;
       min-height: 60px;
     }
+
     .game-row {
       display: flex;
       align-items: center;
       gap: 8px;
       justify-content: center;
     }
+
     .game-label {
       font-size: 12px;
-      color: #aaa;
+      color: var(--text-muted);
       width: 38px;
       text-align: right;
       flex-shrink: 0;
     }
+
     .plus {
       font-size: 18px;
-      color: #999;
+      color: var(--text-muted);
       margin: 0 2px;
       font-weight: bold;
     }
-    .ball.bonus {
-      background: #2c3e50;
-      border: 2px dashed #fff;
-    }
+
     .ball {
       width: 46px;
       height: 46px;
@@ -76,25 +156,36 @@
       color: #fff;
       background: #999;
       animation: pop 0.3s ease;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
+
+    .ball.bonus {
+      background: var(--bonus-ball-bg);
+      border: 2px dashed #fff;
+    }
+
     @keyframes pop {
       from { transform: scale(0); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
+
     .ball:nth-child(1) { background: #fbc400; }
     .ball:nth-child(2) { background: #69c8f2; }
     .ball:nth-child(3) { background: #ff7272; }
     .ball:nth-child(4) { background: #aaa; }
     .ball:nth-child(5) { background: #b0d840; }
     .ball:nth-child(6) { background: #f842d9; }
+
     .empty {
-      color: #bbb;
+      color: var(--text-muted);
       font-size: 15px;
       align-self: center;
       text-align: center;
+      line-height: 1.6;
     }
-    button {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    .main-btn {
+      background: var(--btn-gradient);
       color: #fff;
       border: none;
       border-radius: 50px;
@@ -103,37 +194,66 @@
       font-weight: bold;
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+      box-shadow: 0 8px 20px var(--btn-shadow);
     }
-    button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(102,126,234,0.5); }
-    button:active { transform: translateY(0); }
+
+    .main-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px var(--btn-shadow-hover);
+    }
+
+    .main-btn:active {
+      transform: translateY(0);
+    }
+
     .history {
       margin-top: 30px;
       text-align: left;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--border-color);
       padding-top: 20px;
     }
-    .history h2 { font-size: 14px; color: #666; margin-bottom: 12px; }
+
+    .history h2 {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
     .history-item {
       font-size: 13px;
-      color: #555;
-      padding: 6px 0;
-      border-bottom: 1px dashed #f0f0f0;
+      color: var(--history-text);
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--history-item-border);
+      line-height: 1.6;
     }
+
     .clear-btn {
       margin-top: 15px;
       background: none;
-      color: #aaa;
+      color: var(--text-muted);
       box-shadow: none;
       font-size: 13px;
       padding: 5px 10px;
       text-decoration: underline;
+      border: none;
+      cursor: pointer;
     }
-    .clear-btn:hover { color: #ff7272; box-shadow: none; }
+
+    .clear-btn:hover {
+      color: #ff7272;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body>
   <div class="card">
+    <div class="card-top">
+      <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="테마 전환">
+        <span id="themeIcon">🌙</span>
+        <span id="themeText">다크 모드</span>
+      </button>
+    </div>
+
     <h1>🍀 로또번호 추천</h1>
     <p class="subtitle">버튼을 누르면 행운의 번호가 나옵니다 (1~45)</p>
 
@@ -141,7 +261,7 @@
       <span class="empty">버튼을 눌러 번호를 뽑아보세요!<br />(한 번에 5게임)</span>
     </div>
 
-    <button onclick="generate()">번호 뽑기 🎲 (5게임)</button>
+    <button class="main-btn" onclick="generate()">번호 뽑기 🎲 (5게임)</button>
 
     <div class="history" id="historyBox" style="display:none;">
       <h2>📜 추천 기록</h2>
@@ -151,6 +271,39 @@
   </div>
 
   <script>
+    // 테마 관리 (다크 모드 / 라이트 모드)
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = '라이트 모드';
+      } else {
+        document.body.classList.remove('dark-mode');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = '다크 모드';
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.contains('dark-mode');
+      const nextTheme = isDark ? 'light' : 'dark';
+      localStorage.setItem('theme', nextTheme);
+      applyTheme(nextTheme);
+    }
+
+    // 초기 테마 설정 (로컬 스토리지 또는 OS 다크 모드 감지)
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      applyTheme('dark');
+    }
+
+    // 로또 번호 생성 로직
     const gamesEl = document.getElementById('games');
     const historyBox = document.getElementById('historyBox');
     const historyList = document.getElementById('historyList');
@@ -163,7 +316,6 @@
         set.add(Math.floor(Math.random() * 45) + 1);
       }
       const main = [...set].sort((a, b) => a - b);
-      // 본번호 6개를 제외한 나머지 중에서 보너스 번호 1개 추출
       let bonus;
       do {
         bonus = Math.floor(Math.random() * 45) + 1;
@@ -202,7 +354,6 @@
         gamesEl.appendChild(row);
       }
 
-      // 기록 추가 (5게임 묶음)
       const time = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
       history.unshift({ games, time });
       renderHistory();
